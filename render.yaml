@@ -5,6 +5,7 @@ services:
     plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
+    healthCheckPath: /health
     autoDeploy: true
     envVars:
       - key: OPENWEATHER_API_KEY

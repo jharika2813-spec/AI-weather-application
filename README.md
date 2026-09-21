@@ -19,4 +19,6 @@ The repository includes `render.yaml`, so it can be deployed as a Render Bluepri
 2. Select this repository and its `main` branch. Render detects `render.yaml`.
 3. Enter values for `OPENWEATHER_API_KEY` and `GROQ_API_KEY` when prompted, then deploy.
 
-Render installs dependencies with `pip install -r requirements.txt` and starts the app with `gunicorn app:app`. Keep API keys in Render's environment-variable settings; never commit them to `.env`.
+Render installs dependencies with `pip install -r requirements.txt`, starts the app with `gunicorn app:app`, and checks `/health` after deployment. Keep API keys in Render's environment-variable settings; never commit them to `.env`.
+
+On Windows, the local development server runs with `python app.py`. Gunicorn is installed only on Render's Linux environment.

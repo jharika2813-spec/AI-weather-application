@@ -17,6 +17,11 @@ def create_app() -> Flask:
     def index():
         return render_template("index.html")
 
+    @app.get("/health")
+    def health():
+        """Lightweight endpoint for Render health checks."""
+        return jsonify({"status": "ok"})
+
     @app.get("/api/weather")
     def weather():
         try:
@@ -26,6 +31,9 @@ def create_app() -> Flask:
             return jsonify({"error": str(error)}), 400
         except WeatherServiceError as error:
             return jsonify({"error": str(error)}), 502
+        except Exception:
+            app.logger.exception("Unexpected weather endpoint error")
+            return jsonify({"error": "An unexpected server error occurred."}), 500
 
     @app.post("/api/advice")
     def advice():
@@ -37,6 +45,9 @@ def create_app() -> Flask:
             return jsonify({"advice": get_weather_advice(weather)})
         except GroqServiceError as error:
             return jsonify({"error": str(error)}), 502
+        except Exception:
+            app.logger.exception("Unexpected advice endpoint error")
+            return jsonify({"error": "An unexpected server error occurred."}), 500
 
     return app
 

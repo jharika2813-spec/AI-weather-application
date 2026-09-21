@@ -28,14 +28,18 @@ def get_weather(city: str) -> dict:
     if not response.ok:
         raise WeatherServiceError("Could not retrieve weather data.")
 
-    data = response.json()
-    return {
-        "city": data["name"],
-        "country": data["sys"]["country"],
-        "temperature": round(data["main"]["temp"]),
-        "feels_like": round(data["main"]["feels_like"]),
-        "humidity": data["main"]["humidity"],
-        "wind_speed": data["wind"]["speed"],
-        "condition": data["weather"][0]["description"].title(),
-        "icon": data["weather"][0]["icon"],
-    }
+    try:
+        data = response.json()
+        weather = data["weather"][0]
+        return {
+            "city": data["name"],
+            "country": data["sys"]["country"],
+            "temperature": round(data["main"]["temp"]),
+            "feels_like": round(data["main"]["feels_like"]),
+            "humidity": data["main"]["humidity"],
+            "wind_speed": data["wind"]["speed"],
+            "condition": weather["description"].title(),
+            "icon": weather["icon"],
+        }
+    except (KeyError, IndexError, TypeError, ValueError) as error:
+        raise WeatherServiceError("Weather service returned an invalid response.") from error
